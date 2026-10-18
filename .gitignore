@@ -1,11 +1,5 @@
-# Binaries
-*.exe
-*.dll
-*.pdb
+libs/
+src/bin/
+src/obj/
+publish/
 
-# OS and temporary files
-Thumbs.db
-[Dd]esktop.ini
-$RECYCLE.BIN/
-*.tmp
-*.log
