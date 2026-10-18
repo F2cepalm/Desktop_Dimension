@@ -156,8 +156,9 @@ internal sealed class Universe : IDisposable
 		_lastTick = totalSeconds;
 		UpdateLook(dt);
 		RetireDue();
+		bool anyWantsFrame = AnyWantsEveryFrame();
 		bool anyShowing = AnySpaceShowing();
-		bool idle = !anyShowing && _retiring.Count == 0 && _parts.Count == 0;
+		bool idle = !anyShowing && !anyWantsFrame && _retiring.Count == 0 && _parts.Count == 0;
 		bool trackDue = !idle || totalSeconds - _lastFrame >= 0.25;
 		if (trackDue)
 		{
@@ -168,10 +169,11 @@ internal sealed class Universe : IDisposable
 			if (idle)
 			{
 				anyShowing = AnySpaceShowing();
-				idle = !anyShowing && _retiring.Count == 0 && _parts.Count == 0;
+				anyWantsFrame = AnyWantsEveryFrame();
+				idle = !anyShowing && !anyWantsFrame && _retiring.Count == 0 && _parts.Count == 0;
 			}
 		}
-		bool flag = AnyWantsEveryFrame();
+		bool flag = anyWantsFrame;
 		bool flag2 = totalSeconds - _lastFrame >= (idle ? 0.25 : 0.0125);
 		bool flag3 = flag2 || (flag && (!Gpu.IsSoftware || totalSeconds - _lastInteractive >= 0.0125));
 		if (flag3)
@@ -188,10 +190,7 @@ internal sealed class Universe : IDisposable
 			FrameState frame = new FrameState(totalSeconds, _look, flag2);
 			for (int j = 0; j < _spaces.Count; j++)
 			{
-				if (_spaces[j].IsShowing || !_spaces[j].WantsEveryFrame)
-				{
-					_spaces[j].RenderFrame(frame);
-				}
+				_spaces[j].RenderFrame(frame);
 			}
 			for (int k = 0; k < _parts.Count; k++)
 			{
@@ -210,7 +209,7 @@ internal sealed class Universe : IDisposable
 	{
 		for (int i = 0; i < _spaces.Count; i++)
 		{
-			if (_spaces[i].IsShowing && _spaces[i].WantsEveryFrame)
+			if (_spaces[i].WantsEveryFrame)
 			{
 				return true;
 			}

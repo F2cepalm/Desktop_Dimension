@@ -25,6 +25,8 @@ internal sealed class SpaceSurface : ISpaceCanvas, IDisposable
 
 		public IDCompositionSurface? Surface { get; private set; }
 
+		public bool Initialized { get; set; }
+
 		public bool Ensure(GpuCompositor gpu, int width, int height)
 		{
 			bool num = (object)Surface != null && width <= _capacity.Width && height <= _capacity.Height;
@@ -44,6 +46,7 @@ internal sealed class SpaceSurface : ISpaceCanvas, IDisposable
 			_capacity = (Width: Headroom.Size(width, _capacity.Width), Height: Headroom.Size(height, _capacity.Height));
 			gpu.Composition.CreateSurface((uint)_capacity.Width, (uint)_capacity.Height, Format.B8G8R8A8_UNorm, Vortice.DXGI.AlphaMode.Premultiplied, out var surface).CheckError();
 			Surface = surface;
+			Initialized = false;
 			Visual.SetContent(surface);
 			Visual.SetClip(new RawRectF(0f, 0f, width, height));
 			_size = (Width: width, Height: height);
@@ -60,6 +63,7 @@ internal sealed class SpaceSurface : ISpaceCanvas, IDisposable
 			Visual.SetContent(null);
 			Surface.Dispose();
 			Surface = null;
+			Initialized = false;
 			_size = default;
 			_capacity = default;
 			return true;
@@ -231,12 +235,14 @@ internal sealed class SpaceSurface : ISpaceCanvas, IDisposable
 
 	private void Draw(Layer layer, int width, int height, float scale, Action<ID2D1DeviceContext, ID2D1Factory1> draw)
 	{
-		layer.Ensure(_gpu, width, height);
+		bool isNew = layer.Ensure(_gpu, width, height);
 		ID2D1DeviceContext d2DContext = _gpu.D2DContext;
 		float num = 96f * scale;
 		Int2 updateOffset;
-		using (IDXGISurface surface = layer.Surface.BeginDraw<IDXGISurface>(new RawRect(0, 0, Math.Max(1, width), Math.Max(1, height)), out updateOffset))
+		RawRect? updateRect = (isNew || !layer.Initialized) ? null : new RawRect(0, 0, Math.Max(1, width), Math.Max(1, height));
+		using (IDXGISurface surface = layer.Surface.BeginDraw<IDXGISurface>(updateRect, out updateOffset))
 		{
+			layer.Initialized = true;
 			using ID2D1Bitmap1 target = d2DContext.CreateBitmapFromDxgiSurface(surface, new BitmapProperties1(Bgra, num, num, BitmapOptions.Target | BitmapOptions.CannotDraw));
 			d2DContext.Target = target;
 			d2DContext.SetDpi(num, num);
@@ -261,9 +267,9 @@ internal sealed class SpaceSurface : ISpaceCanvas, IDisposable
 		if (rect.Width > 0 && rect.Height > 0)
 		{
 			Int2 updateOffset;
-			using (ID3D11Texture2D resource = surface.BeginDraw<ID3D11Texture2D>(new RawRect(rect.X, rect.Y, rect.X + rect.Width, rect.Y + rect.Height), out updateOffset))
+			using (ID3D11Texture2D resource = surface.BeginDraw<ID3D11Texture2D>(null, out updateOffset))
 			{
-				Box value = new Box(updateOffset.X, updateOffset.Y, 0, updateOffset.X + rect.Width, updateOffset.Y + rect.Height, 1);
+				Box value = new Box(updateOffset.X + rect.X, updateOffset.Y + rect.Y, 0, updateOffset.X + rect.X + rect.Width, updateOffset.Y + rect.Height, 1);
 				ReadOnlySpan<int> data = pixels.AsSpan(rect.Y * stride + rect.X, (rect.Height - 1) * stride + rect.Width);
 				_gpu.Context.UpdateSubresource(data, resource, 0u, (uint)(stride * 4), 0u, value);
 			}
