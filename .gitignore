@@ -1,0 +1,11 @@
+# Binaries
+*.exe
+*.dll
+*.pdb
+
+# OS and temporary files
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.tmp
+*.log
