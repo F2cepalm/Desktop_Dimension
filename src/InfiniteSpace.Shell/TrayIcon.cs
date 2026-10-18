@@ -77,7 +77,13 @@ internal sealed class TrayIcon : IDisposable
 
 	public void Notify(string title, string text)
 	{
-		_icon.ShowBalloonTip(5000, title, text, ToolTipIcon.None);
+		try
+		{
+			_icon.ShowBalloonTip(3000, title, text, ToolTipIcon.None);
+		}
+		catch
+		{
+		}
 	}
 
 	public void Dispose()
