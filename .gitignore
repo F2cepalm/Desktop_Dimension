@@ -2,4 +2,7 @@ libs/
 src/bin/
 src/obj/
 publish/
+*.dll
+*.dmp
+*.log
 
