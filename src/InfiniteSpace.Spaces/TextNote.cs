@@ -26,6 +26,7 @@ internal sealed class TextNote : IInk
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
 	public bool Italic { get; set; }
 
+	[JsonIgnore]
 	public TextNote? Previous { get; set; }
 
 	public NoteFile? File { get; set; }

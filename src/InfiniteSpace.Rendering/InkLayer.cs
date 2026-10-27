@@ -320,7 +320,7 @@ internal sealed class InkLayer : IDisposable
 	private void EnsureCapacity()
 	{
 		bool num = (object)_ink != null && _capacityWidth >= Width && _capacityHeight >= Height;
-		bool flag = (long)_capacityWidth * (long)_capacityHeight > 4 * Math.Max(65536L, (long)Width * (long)Height);
+		bool flag = (long)_capacityWidth * (long)_capacityHeight > 2 * Math.Max(65536L, (long)Width * (long)Height);
 		if (!num || flag)
 		{
 			int val = (int)Math.Min(16384u, _gpu.D2DContext.MaximumBitmapSize);

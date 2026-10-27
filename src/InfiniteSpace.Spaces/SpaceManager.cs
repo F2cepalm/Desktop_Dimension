@@ -544,7 +544,7 @@ internal sealed class SpaceManager(SpaceStore store, Universe universe, ILogger<
 		moving.Now = bounds;
 		moving.Carried = carried;
 		Matrix matrix = Reshaped(moving.Before, moving.Bounds, bounds);
-		if (HostFrames.SameScale(space.Shown, matrix) && !space.Window.IsReshaping)
+		if (!space.Stretched && HostFrames.SameScale(space.Shown, matrix) && !space.Window.IsReshaping)
 		{
 			if (!(matrix == space.Shown))
 			{
@@ -556,9 +556,21 @@ internal sealed class SpaceManager(SpaceStore store, Universe universe, ILogger<
 		}
 		else
 		{
-			Matrix toScreen = (space.Shown = matrix);
-			space.ToScreen = toScreen;
-			space.Window.ReshapeLive(SpaceGeometry.Transform(space.Shape, matrix), matrix);
+			space.ToScreen = matrix;
+			Matrix shown = space.Shown;
+			shown.Invert();
+			shown.Append(matrix);
+			space.Window.Stretch(shown, matrix);
+			space.Stretched = true;
+		}
+	}
+
+	public void SettleMoving(MovingSpace moving)
+	{
+		Space space = moving.Space;
+		if (_spaces.Contains(space) && space.Stretched)
+		{
+			Reshape(space);
 		}
 	}
 
@@ -1098,13 +1110,10 @@ internal sealed class SpaceManager(SpaceStore store, Universe universe, ILogger<
 			return;
 		}
 		Point point = new Point(typed.X, typed.Y);
-		if (editing != null && (point - shownAt).Length < 0.01)
+		if (editing != null && (point - shownAt).Length < 0.5)
 		{
-			TextNote textNote = typed;
-			double x = editing.X;
-			double y = editing.Y;
-			typed.X = x;
-			textNote.Y = y;
+			typed.X = editing.X;
+			typed.Y = editing.Y;
 		}
 		else
 		{
@@ -1114,11 +1123,8 @@ internal sealed class SpaceManager(SpaceStore store, Universe universe, ILogger<
 				toScreen.Invert();
 			}
 			Point point2 = toScreen.Transform(point);
-			TextNote textNote = typed;
-			double y = Math.Round(point2.X, 2);
-			double x = Math.Round(point2.Y, 2);
-			typed.X = y;
-			textNote.Y = x;
+			typed.X = Math.Round(point2.X, 2);
+			typed.Y = Math.Round(point2.Y, 2);
 		}
 		if (editing != null && SameNote(editing, typed))
 		{

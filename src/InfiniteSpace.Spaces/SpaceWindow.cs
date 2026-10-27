@@ -124,6 +124,14 @@ internal sealed class SpaceWindow : IDisposable
 
 	private static readonly nint MoveCursor = Win32.LoadCursor(IntPtr.Zero, 32646);
 
+	private static readonly Pen RegionPen = Freeze(new Pen(Brushes.Black, 20.0) { LineJoin = PenLineJoin.Round });
+
+	private static T Freeze<T>(T freezable) where T : Freezable
+	{
+		freezable.Freeze();
+		return freezable;
+	}
+
 	private readonly HwndSource _source;
 
 	private SpaceSurface _surface;
@@ -656,6 +664,7 @@ internal sealed class SpaceWindow : IDisposable
 		{
 			_toScreen = toScreen;
 			ShowAt(Rect.Transform(_world, relative));
+			_surface.CommitNow();
 		}
 	}
 
@@ -686,7 +695,7 @@ internal sealed class SpaceWindow : IDisposable
 
 	private void ShowAt(Rect target)
 	{
-		if (!_shown || _hidden || _placementChanged)
+		if (!_shown || _hidden)
 		{
 			_placementChanged = true;
 			return;
@@ -868,16 +877,10 @@ internal sealed class SpaceWindow : IDisposable
 	private void Present()
 	{
 		bool flag = false;
-		if (_placementChanged)
+		if (_placementChanged && !_floating)
 		{
-			bool floating = _floating;
-			EndFloat();
 			Win32.SetWindowPos(_source.Handle, IntPtr.Zero, _position.X, _position.Y, _size.Width, _size.Height, 8476u);
-			flag = floating;
-			if (floating)
-			{
-				RestoreRegion();
-			}
+			RestoreRegion();
 			_placementChanged = false;
 		}
 		if (_lookDirty)
@@ -1007,11 +1010,7 @@ internal sealed class SpaceWindow : IDisposable
 		{
 			return;
 		}
-		Pen pen = new Pen(Brushes.Black, 20.0)
-		{
-			LineJoin = PenLineJoin.Round
-		};
-		PathGeometry widenedPathGeometry = _outline.GetWidenedPathGeometry(pen, 2.5, ToleranceType.Absolute);
+		PathGeometry widenedPathGeometry = _outline.GetWidenedPathGeometry(RegionPen, 2.5, ToleranceType.Absolute);
 		PathGeometry flattenedPathGeometry = Geometry.Combine(_outline, widenedPathGeometry, GeometryCombineMode.Union, null, 2.5, ToleranceType.Absolute).GetFlattenedPathGeometry(2.5, ToleranceType.Absolute);
 		List<Win32.POINT> points = new List<Win32.POINT>();
 		List<int> list = new List<int>();

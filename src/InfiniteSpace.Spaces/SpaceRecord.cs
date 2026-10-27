@@ -124,6 +124,15 @@ internal sealed class SpaceRecord
 	{
 		Notes.Remove(note);
 		edited.Previous = note;
+		TextNote? cur = edited;
+		for (int i = 0; i < 20 && cur != null; i++)
+		{
+			cur = cur.Previous;
+		}
+		if (cur != null)
+		{
+			cur.Previous = null;
+		}
 		Notes.Add(edited);
 	}
 

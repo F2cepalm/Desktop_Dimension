@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -7,7 +8,7 @@ using InfiniteSpace.Spaces;
 
 namespace InfiniteSpace.Rendering;
 
-internal sealed class DreamRaster
+internal sealed class DreamRaster : IDisposable
 {
 	private readonly record struct Edge(double YMin, double YMax, double XAtYMin, double Slope, int Winding);
 
@@ -194,8 +195,16 @@ internal sealed class DreamRaster
 		_world = world;
 		Width = Math.Max(1, (int)Math.Round(world.Width / 2.0));
 		Height = Math.Max(1, (int)Math.Round(world.Height / 2.0));
-		_pixels = Buffer(recycle?._pixels, Width * Height);
-		_next = Buffer(recycle?._next, Width * Height);
+		int count = Width * Height;
+		int[]? oldPixels = recycle?._pixels;
+		int[]? oldNext = recycle?._next;
+		if (recycle != null)
+		{
+			recycle._pixels = null!;
+			recycle._next = null!;
+		}
+		_pixels = RentBuffer(oldPixels, count);
+		_next = RentBuffer(oldNext, count);
 		if (recycle != null)
 		{
 			int[] rowStart = recycle._rowStart;
@@ -236,19 +245,37 @@ internal sealed class DreamRaster
 		_crossings = ((array2 != null && array2.Length >= num3) ? array2 : new Crossing[num3 + num3 / 2]);
 	}
 
-	private static int[] Buffer(int[]? old, int count)
+	private static int[] RentBuffer(int[]? old, int count)
 	{
-		if (old == null)
+		if (old != null && old.Length >= count)
 		{
-			return new int[count];
+			Array.Clear(old, 0, count);
+			return old;
 		}
-		if (old.Length < count)
+		if (old != null)
 		{
-			return new int[count + count / 2];
+			ArrayPool<int>.Shared.Return(old);
 		}
-		Array.Clear(old, 0, count);
-		return old;
+		int[] rented = ArrayPool<int>.Shared.Rent(count);
+		Array.Clear(rented, 0, count);
+		return rented;
 	}
+
+	public void Dispose()
+	{
+		if (_pixels != null)
+		{
+			ArrayPool<int>.Shared.Return(_pixels);
+			_pixels = null!;
+		}
+		if (_next != null)
+		{
+			ArrayPool<int>.Shared.Return(_next);
+			_next = null!;
+		}
+	}
+
+
 
 	public void Move(Rect world)
 	{

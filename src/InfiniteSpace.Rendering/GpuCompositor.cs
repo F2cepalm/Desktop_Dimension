@@ -160,7 +160,7 @@ internal sealed class GpuCompositor : IDisposable
 		ID2D1DeviceContext d2DContext = D2DContext;
 		SizeI sizeI = bitmap?.PixelSize ?? default(SizeI);
 		bool num2 = (object)bitmap != null && sizeI.Width >= width && sizeI.Height >= height && bitmap.Dpi.Width == num;
-		bool flag = (long)sizeI.Width * (long)sizeI.Height > 4 * Math.Max(65536L, (long)width * (long)height);
+		bool flag = (long)sizeI.Width * (long)sizeI.Height > 2 * Math.Max(65536L, (long)width * (long)height);
 		if (!num2 | flag)
 		{
 			bitmap?.Dispose();

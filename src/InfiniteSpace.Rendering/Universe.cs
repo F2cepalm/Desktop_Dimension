@@ -174,8 +174,8 @@ internal sealed class Universe : IDisposable
 			}
 		}
 		bool flag = anyWantsFrame;
-		bool flag2 = totalSeconds - _lastFrame >= (idle ? 0.25 : 0.0125);
-		bool flag3 = flag2 || (flag && (!Gpu.IsSoftware || totalSeconds - _lastInteractive >= 0.0125));
+		bool flag2 = totalSeconds - _lastFrame >= (idle ? 0.25 : 0.003);
+		bool flag3 = flag2 || flag;
 		if (flag3)
 		{
 			_lastInteractive = totalSeconds;

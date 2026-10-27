@@ -1,0 +1,38 @@
+/* ==========================================================================
+   JetBrains Mono Kazakh Appendix Font (@font-face & unicode-range)
+   Retrieva Typography System / Desktop Dimension
+   ========================================================================== */
+
+/* 1. Transparent Appendix Overlay for 'JetBrains Mono'
+   Injects missing Kazakh glyphs, the distinct 45°-slanted 'ә', and Tenge sign directly into any JetBrains Mono stack. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('JetBrainsMono-Kazakh-Appendix.woff2') format('woff2'),
+       url('JetBrainsMono-Kazakh-Appendix.ttf') format('truetype');
+  unicode-range: U+0406, U+0456, U+0492, U+0493, U+049A, U+049B,
+                 U+04A2, U+04A3, U+04AE, U+04AF, U+04B0, U+04B1,
+                 U+04BA, U+04BB, U+04D8, U+04D9, U+04E8, U+04E9, U+20B8;
+}
+
+/* 2. Standalone Named Family for explicit assignment */
+@font-face {
+  font-family: 'JetBrains Mono Kazakh Appendix';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('JetBrainsMono-Kazakh-Appendix.woff2') format('woff2'),
+       url('JetBrainsMono-Kazakh-Appendix.ttf') format('truetype');
+}
+
+/* 3. Full Kazakh JetBrains Mono (Complete Standalone Font) */
+@font-face {
+  font-family: 'JetBrains Mono Kazakh';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('JetBrainsMono-Kazakh-Medium.woff2') format('woff2'),
+       url('JetBrainsMono-Kazakh-Medium.ttf') format('truetype');
+}

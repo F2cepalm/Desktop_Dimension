@@ -128,10 +128,12 @@ internal static class NoteText
 		if (Measured.TryGetValue(from, out MeasuredNote value))
 		{
 			Measured.AddOrUpdate(to, value);
+			Measured.Remove(from);
 		}
 		if (MeasuredFiles.TryGetValue(from, out MeasuredFile value2))
 		{
 			MeasuredFiles.AddOrUpdate(to, value2);
+			MeasuredFiles.Remove(from);
 		}
 	}
 

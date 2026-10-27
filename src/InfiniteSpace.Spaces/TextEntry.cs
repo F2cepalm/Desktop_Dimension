@@ -135,13 +135,20 @@ internal sealed class TextEntry : Window
 		};
 		_palette.StylePicked += SetStyle;
 		Typeface typeface = NoteText.Typeface;
+		ControlTemplate boxTemplate = new ControlTemplate(typeof(TextBox));
+		FrameworkElementFactory contentHost = new FrameworkElementFactory(typeof(ScrollViewer), "PART_ContentHost");
+		contentHost.SetValue(ScrollViewer.MarginProperty, new Thickness(0.0));
+		contentHost.SetValue(ScrollViewer.PaddingProperty, new Thickness(0.0));
+		boxTemplate.VisualTree = contentHost;
 		_box = new TextBox
 		{
+			Template = boxTemplate,
 			FontFamily = typeface.FontFamily,
 			FontStyle = typeface.Style,
 			FontWeight = typeface.Weight,
 			BorderThickness = new Thickness(0.0),
 			Padding = new Thickness(0.0),
+			Margin = new Thickness(0.0),
 			AcceptsReturn = true,
 			AcceptsTab = false,
 			Text = draft.Text
@@ -196,11 +203,7 @@ internal sealed class TextEntry : Window
 		MovesByDraggingTheText();
 		Loaded += (object _, RoutedEventArgs _) =>
 		{
-			Rect rectFromCharacterIndex = _box.GetRectFromCharacterIndex(0);
-			if (!rectFromCharacterIndex.IsEmpty)
-			{
-				_inset = rectFromCharacterIndex.X;
-			}
+			_inset = 0.0;
 			ApplyShape();
 			AlignTextWithOrigin();
 			_box.Focus();
@@ -445,7 +448,7 @@ internal sealed class TextEntry : Window
 
 	private double TextWidth()
 	{
-		return _wrapWidth ?? Math.Max(1.0, _box.ActualWidth - 2.0 * _inset);
+		return _wrapWidth ?? Math.Max(1.0, _box.ActualWidth);
 	}
 
 	internal static void Shape(TextBox box, double fontSize, double? wrapWidth, double inset)
@@ -454,9 +457,9 @@ internal sealed class TextEntry : Window
 		if (wrapWidth.HasValue)
 		{
 			double valueOrDefault = wrapWidth.GetValueOrDefault();
-			box.TextWrapping = TextWrapping.WrapWithOverflow;
+			box.TextWrapping = TextWrapping.Wrap;
 			box.MinWidth = 0.0;
-			box.Width = valueOrDefault + 2.0 * inset;
+			box.Width = valueOrDefault;
 		}
 		else
 		{
@@ -501,23 +504,14 @@ internal sealed class TextEntry : Window
 
 	private void AlignTextWithOrigin()
 	{
-		Rect rectFromCharacterIndex = _box.GetRectFromCharacterIndex(0);
-		if (!rectFromCharacterIndex.IsEmpty)
-		{
-			Point point = _box.TranslatePoint(rectFromCharacterIndex.TopLeft, this);
-			Left = _origin.X - point.X;
-			Top = _origin.Y - point.Y;
-		}
+		Point point = _box.TranslatePoint(new Point(0.0, 0.0), this);
+		Left = _origin.X - point.X;
+		Top = _origin.Y - point.Y;
 	}
 
 	private Point TextOrigin()
 	{
-		Rect rectFromCharacterIndex = _box.GetRectFromCharacterIndex(0);
-		if (rectFromCharacterIndex.IsEmpty)
-		{
-			return _origin;
-		}
-		Point point = _box.TranslatePoint(rectFromCharacterIndex.TopLeft, this);
+		Point point = _box.TranslatePoint(new Point(0.0, 0.0), this);
 		return new Point(Left + point.X, Top + point.Y);
 	}
 

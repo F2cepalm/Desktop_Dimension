@@ -71,6 +71,8 @@ internal sealed class MoveOverlay : GpuOverlay
 
 	private Vector _carried;
 
+	private System.Windows.Threading.DispatcherTimer? _settleTimer;
+
 	private static string PickHint => "Click a space to pick it up   ·   Esc to cancel";
 
 	private static string FollowHint => "Click to set it down   ·   arrow keys reshape (Shift shrinks, Ctrl fine), Alt+arrows nudge, wheel scales   ·   double-click or Enter drops it   ·   Esc puts it back";
@@ -123,6 +125,28 @@ internal sealed class MoveOverlay : GpuOverlay
 		}
 	}
 
+
+
+	private void ScheduleSettle()
+	{
+		_settleTimer?.Stop();
+		if (_settleTimer == null)
+		{
+			_settleTimer = new System.Windows.Threading.DispatcherTimer(
+				TimeSpan.FromMilliseconds(150),
+				System.Windows.Threading.DispatcherPriority.Background,
+				(s, e) =>
+				{
+					_settleTimer?.Stop();
+					if (_moving != null && _drag == BlockGrip.None)
+					{
+						_spaces.SettleMoving(_moving);
+					}
+				},
+				System.Windows.Threading.Dispatcher.CurrentDispatcher);
+		}
+		_settleTimer.Start();
+	}
 	protected override void DisposeParts()
 	{
 		OverlaySprite[] arrows = _arrows;
@@ -145,6 +169,7 @@ internal sealed class MoveOverlay : GpuOverlay
 		_arrowLayer.Dispose();
 		_size.Dispose();
 		_sizePicture?.Dispose();
+		_settleTimer?.Stop();
 	}
 
 	protected override void OnMouseMove(Point at)
@@ -210,12 +235,22 @@ internal sealed class MoveOverlay : GpuOverlay
 		{
 			_drag = BlockGrip.None;
 			ReleaseMouseCapture();
+			_settleTimer?.Stop();
+			if (_moving != null)
+			{
+				_spaces.SettleMoving(_moving);
+			}
 		}
 	}
 
 	protected override void OnCaptureLost()
 	{
 		_drag = BlockGrip.None;
+		_settleTimer?.Stop();
+		if (_moving != null)
+		{
+			_spaces.SettleMoving(_moving);
+		}
 	}
 
 	protected override void OnWheel(int delta)
@@ -223,6 +258,7 @@ internal sealed class MoveOverlay : GpuOverlay
 		if (_moving != null)
 		{
 			Fit(Contained(_rect, BlockEdit.Scale(_rect, (delta > 0) ? 1.1 : (930.0 / 1023.0), 24.0)));
+			ScheduleSettle();
 		}
 	}
 
@@ -254,6 +290,7 @@ internal sealed class MoveOverlay : GpuOverlay
 				else
 				{
 					Fit(Contained(_rect, BlockEdit.Grow(_rect, blockGrip, modifiers.HasFlag(ModifierKeys.Shift) ? (0.0 - num) : num, 24.0)));
+					ScheduleSettle();
 				}
 				return true;
 			}

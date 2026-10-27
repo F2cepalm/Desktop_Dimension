@@ -30,7 +30,7 @@ internal sealed class SpaceSurface : ISpaceCanvas, IDisposable
 		public bool Ensure(GpuCompositor gpu, int width, int height)
 		{
 			bool num = (object)Surface != null && width <= _capacity.Width && height <= _capacity.Height;
-			bool flag = (long)_capacity.Width * (long)_capacity.Height > 4 * Math.Max(65536L, (long)width * (long)height);
+			bool flag = (long)_capacity.Width * (long)_capacity.Height > 2 * Math.Max(65536L, (long)width * (long)height);
 			if (num && !flag)
 			{
 				(int, int) size = _size;
