@@ -9,3 +9,6 @@ publish/
 
 # Built executable (distribute via GitHub Releases, not git)
 /InfiniteSpace.exe
+
+# Release build output
+artifacts/
