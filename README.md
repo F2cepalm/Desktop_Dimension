@@ -52,4 +52,4 @@ Desktop Dimension is free to use. If it's useful to you, support for development
 
 ## License
 
-Desktop Dimension is released under the [MIT License](LICENSE).
+Desktop Dimension is released under the [MIT License](LICENSE). Bundled fonts and third-party components are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
