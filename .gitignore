@@ -6,3 +6,6 @@ publish/
 *.dmp
 *.log
 
+
+# Built executable (distribute via GitHub Releases, not git)
+/InfiniteSpace.exe
