@@ -52,4 +52,4 @@ Desktop Dimension is free to use. If it's useful to you, support for development
 
 ## License
 
-License to be announced. Until a `LICENSE` file is added to this repository, all rights are reserved by the author.
+Desktop Dimension is released under the [MIT License](LICENSE).
