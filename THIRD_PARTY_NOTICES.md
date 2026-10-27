@@ -23,9 +23,12 @@ the OFL, as the license requires.
 | SharpGen.Runtime, SharpGen.Runtime.COM | 2.4.2-beta | MIT | (c) 2010-2017 Alexandre Mutel, 2017-2023 Jeremy Koritzinsky, 2023-2024 Amer Koleci |
 | Vortice.DirectX, Vortice.DXGI, Vortice.Direct2D1, Vortice.Direct3D11, Vortice.DirectComposition, Vortice.Mathematics | 3.8.3 / 2.1.0 | MIT | Copyright (c) Amer Koleci and Contributors |
 
-The SharpGen copyright line and its MIT license come from the package metadata.
-The upstream LICENSE file could not be retrieved, so verify it against the
-SharpGen repository before a release.
+SharpGen is MIT-licensed. Its copyright line in the table comes from the
+2.4.2-beta package metadata. The upstream
+[SharpGenTools LICENSE.txt](https://github.com/SharpGenTools/SharpGen.Runtime.COM/blob/master/LICENSE.txt)
+lists an older copyright line, "(c) 2010-2017 Alexandre Mutel, 2017 Jeremy
+Koritzinsky". Both lines are kept above so the notice matches the shipped
+package and the upstream file.
 
 ### MIT License (applies to the MIT packages above)
 
