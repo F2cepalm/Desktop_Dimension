@@ -18,7 +18,13 @@ Desktop Dimension is a Windows app for an endless, infinite canvas on your deskt
 
 ## Install
 
-Pre-built downloads will be published on the [Releases](https://github.com/F2cepalm/Desktop_Dimension/releases) page.
+Paste this into PowerShell to download, install, and launch the latest release. No .NET install or compiling needed:
+
+```powershell
+$d = "$env:LOCALAPPDATA\Programs\DesktopDimension"; Invoke-WebRequest https://github.com/F2cepalm/Desktop_Dimension/releases/download/v0.1.0/InfiniteSpace-v0.1.0-win-x64.zip -OutFile "$env:TEMP\dd.zip"; Expand-Archive "$env:TEMP\dd.zip" $d -Force; Remove-Item "$env:TEMP\dd.zip"; & "$d\InfiniteSpace\InfiniteSpace.exe"
+```
+
+The app installs to `%LOCALAPPDATA%\Programs\DesktopDimension`. You can also download the zip from the [Releases](https://github.com/F2cepalm/Desktop_Dimension/releases) page and extract it yourself. Windows SmartScreen may warn on first run because the executable is not code-signed.
 
 ## Build from source
 
