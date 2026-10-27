@@ -304,11 +304,11 @@ internal sealed class InkyLook : ISpaceLook, IDisposable
 	{
 		if ((object)_clayBrush == null)
 		{
-			_clayBrush = context.CreateSolidColorBrush(ToColor4(ClaudishStyle.Clay));
+			_clayBrush = context.CreateSolidColorBrush(ToColor4(OrangeWobblyStyle.Clay));
 		}
 		if ((object)_inkBrush == null)
 		{
-			_inkBrush = context.CreateSolidColorBrush(ToColor4(ClaudishStyle.Ink));
+			_inkBrush = context.CreateSolidColorBrush(ToColor4(OrangeWobblyStyle.Ink));
 		}
 		int num = (int)((_boil % 8 + 8) % 8);
 		BoilFrame boil = new BoilFrame(num);

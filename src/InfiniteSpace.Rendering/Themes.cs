@@ -8,7 +8,7 @@ internal static class Themes
 {
 	public const string Dreamy = "Dreamy";
 
-	public const string Claudish = "Claudish";
+	public const string OrangeWobbly = "Orange Wobbly";
 
 	public const string Glory = "Glory";
 
@@ -22,7 +22,7 @@ internal static class Themes
 
 	public const string Void = "Void";
 
-	public static IReadOnlyList<string> All { get; } = new _003C_003Ez__ReadOnlyArray<string>(new string[8] { "Dreamy", "Claudish", "Glory", "Burn", "Sunday", "Parallax", "Ocean", "Void" });
+	public static IReadOnlyList<string> All { get; } = new _003C_003Ez__ReadOnlyArray<string>(new string[8] { "Dreamy", "Orange Wobbly", "Glory", "Burn", "Sunday", "Parallax", "Ocean", "Void" });
 
 	public static string Resolve(string? name)
 	{
@@ -37,7 +37,7 @@ internal static class Themes
 	{
 		return theme switch
 		{
-			"Claudish" => ClaudishStyle.Ink, 
+			"Orange Wobbly" => OrangeWobblyStyle.Ink, 
 			"Glory" => GloryLook.Ink, 
 			"Burn" => BurnLook.Ink, 
 			"Sunday" => SundayLook.Ink, 
@@ -52,7 +52,7 @@ internal static class Themes
 	{
 		return theme switch
 		{
-			"Claudish" => Color.FromRgb(92, 29, 11), 
+			"Orange Wobbly" => Color.FromRgb(92, 29, 11), 
 			"Glory" => Color.FromRgb(byte.MaxValue, 198, 92), 
 			"Burn" => Color.FromRgb(byte.MaxValue, 154, 60), 
 			"Sunday" => Color.FromRgb(184, 59, 91), 
@@ -67,7 +67,7 @@ internal static class Themes
 	{
 		return theme switch
 		{
-			"Claudish" => (ISpaceLook)new InkyLook(), 
+			"Orange Wobbly" => (ISpaceLook)new InkyLook(), 
 			"Glory" => new GloryLook(), 
 			"Burn" => new BurnLook(), 
 			"Sunday" => new SundayLook(), 

@@ -2,7 +2,7 @@ using System.Windows.Media;
 
 namespace InfiniteSpace.Rendering;
 
-internal static class ClaudishStyle
+internal static class OrangeWobblyStyle
 {
 	public static readonly Color Clay = Color.FromRgb(219, 120, 89);
 
