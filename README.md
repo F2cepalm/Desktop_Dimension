@@ -1,6 +1,6 @@
 # Desktop Dimension (InfiniteSpace)
 
-Desktop Dimension is a Windows app for an endless, infinite canvas on your desktop. Write notes, sketch with ink, and arrange your work in spaces that you can pan and zoom freely, with a choice of visual themes.
+Desktop Dimension is a Windows app for a canvas of any size on your desktop, toggled with a global hotkey. Write notes, sketch with ink, and arrange your work in spaces that you can pan and zoom freely, with a choice of visual themes.
 
 ## Features
 
